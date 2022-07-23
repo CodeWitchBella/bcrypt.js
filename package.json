@@ -1,7 +1,10 @@
 {
   "name": "@isbl/bcryptjs",
   "description": "Optimized bcrypt in plain JavaScript with zero dependencies modified to run in modern browser-compatible js runtimes.",
-  "version": "2.4.4",
+  "version": "3.0.0-beta.1",
+  "publishConfig": {
+    "access": "public"
+  },
   "author": "Daniel Wirtz <dcode@dcode.io>",
   "contributors": [
     "Shane Girish <shaneGirish@gmail.com> (https://github.com/shaneGirish)",
@@ -12,7 +15,7 @@
     "Isabella Skořepová <> (https://github.com/CodeWitchBella)"
   ],
   "repository": {
-    "type": "url",
+    "type": "git",
     "url": "https://github.com/CodeWitchBella/bcrypt.js.git"
   },
   "bugs": {
@@ -36,15 +39,13 @@
   },
   "dependencies": {},
   "devDependencies": {
+    "@isbl/publisher": "^0.8.2",
     "bcrypt": "^5.0.1",
     "bcryptjs": "^2.4.3"
   },
   "license": "MIT",
   "scripts": {
-    "test": "node node_modules/testjs/bin/testjs",
-    "build": "node scripts/build.js",
-    "compile": "node node_modules/closurecompiler/bin/ccjs dist/bcrypt.js --compilation_level=SIMPLE_OPTIMIZATIONS --create_source_map=dist/bcrypt.min.map > dist/bcrypt.min.js",
-    "compress": "gzip -c -9 dist/bcrypt.min.js > dist/bcrypt.min.js.gz",
-    "make": "npm run build && npm run compile && npm run compress && npm test"
+    "test": "node tests/suite.js",
+    "prepublishOnly": "isbl-publisher prepublishOnly"
   }
 }
