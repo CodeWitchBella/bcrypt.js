@@ -1,7 +1,9 @@
-var bcrypt = require("bcrypt"),
-    bcryptjs = require("../index.js"),
-    pass = "ä☺𠜎️☁",
-    testRounds = [8, 9, 10, 11, 12, 13, 14, 15];
+import bcrypt from "bcrypt"
+import bcryptjs from "bcryptjs"
+import * as isblbcryptjs from '../index-node.js'
+
+const pass = "ä☺𠜎️☁"
+const testRounds = [8, 9, 10, 11, 12, 13, 14, 15];
 
 function testSync(name, salt, impl) {
     var res;
@@ -14,6 +16,15 @@ function testSync(name, salt, impl) {
 function testAsync(name, salt, impl, cb) {
     console.time(name);
     impl.hash(pass, salt, function(err, res) {
+        console.timeEnd(name);
+        console.log("`"+res+"`  ");
+        if (cb) cb();
+    });
+}
+
+function testPromise(name, salt, impl, cb) {
+    console.time(name);
+    impl.hash(pass, salt).then(function(res) {
         console.timeEnd(name);
         console.log("`"+res+"`  ");
         if (cb) cb();
@@ -48,12 +59,16 @@ function next() {
         console.log("Salt: `"+salt+"`  ");
         testSync("* **bcrypt** sync", salt, bcrypt);
         testSync("* **bcrypt.js** sync", salt, bcryptjs);
+        testSync("* **@isbl/bcryptjs** sync", salt, isblbcryptjs);
+
         testAsync("* **bcrypt** async", salt, bcrypt, function() {
             testAsync("* **bcrypt.js** async", salt, bcryptjs, function() {
-                console.log("");
-                next();
+                testPromise("* **@isbl/bcryptjs** async", salt, isblbcryptjs, function() {
+                    console.log("");
+                    next();
+                });
             });
-        });
+        });        
     })(testRounds.shift());
 }
 next();

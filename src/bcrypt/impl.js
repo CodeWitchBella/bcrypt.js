@@ -1,30 +1,34 @@
-/**
- * @type {number}
- * @const
- * @inner
- */
-var BCRYPT_SALT_LEN = 16;
+import { nextTick } from './util.js'
+import { stringToBytes } from './util/utf8.js'
+import { base64_encode, base64_decode } from './util/base64.js'
 
 /**
  * @type {number}
  * @const
  * @inner
  */
-var GENSALT_DEFAULT_LOG2_ROUNDS = 10;
+export const BCRYPT_SALT_LEN = 16;
 
 /**
  * @type {number}
  * @const
  * @inner
  */
-var BLOWFISH_NUM_ROUNDS = 16;
+export const GENSALT_DEFAULT_LOG2_ROUNDS = 10;
 
 /**
  * @type {number}
  * @const
  * @inner
  */
-var MAX_EXECUTION_TIME = 100;
+const BLOWFISH_NUM_ROUNDS = 16;
+
+/**
+ * @type {number}
+ * @const
+ * @inner
+ */
+const MAX_EXECUTION_TIME = 100;
 
 /**
  * @type {Array.<number>}
@@ -575,7 +579,7 @@ function _crypt(b, salt, rounds, callback, progressCallback) {
  * @returns {string|undefined} Resulting hash if callback has been omitted, otherwise `undefined`
  * @inner
  */
-function _hash(s, salt, callback, progressCallback) {
+export function _hash(s, salt, callback, progressCallback) {
     var err;
     if (typeof s !== 'string' || typeof salt !== 'string') {
         err = Error("Invalid string / salt: Not a string");

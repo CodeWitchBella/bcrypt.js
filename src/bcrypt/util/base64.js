@@ -35,7 +35,7 @@ var stringFromCharCode = String.fromCharCode;
  * @returns {string}
  * @inner
  */
-function base64_encode(b, len) {
+export function base64_encode(b, len) {
     var off = 0,
         rs = [],
         c1, c2;
@@ -72,7 +72,7 @@ function base64_encode(b, len) {
  * @returns {!Array.<number>}
  * @inner
  */
-function base64_decode(s, len) {
+export function base64_decode(s, len) {
     var off = 0,
         slen = s.length,
         olen = 0,

@@ -1,6 +1,6 @@
 {
-  "name": "bcryptjs",
-  "description": "Optimized bcrypt in plain JavaScript with zero dependencies. Compatible to 'bcrypt'.",
+  "name": "@isbl/bcryptjs",
+  "description": "Optimized bcrypt in plain JavaScript with zero dependencies modified to run in modern browser-compatible js runtimes.",
   "version": "2.4.4",
   "author": "Daniel Wirtz <dcode@dcode.io>",
   "contributors": [
@@ -8,14 +8,15 @@
     "Alex Murray <> (https://github.com/alexmurray)",
     "Nicolas Pelletier <> (https://github.com/NicolasPelletier)",
     "Josh Rogers <> (https://github.com/geekymole)",
-    "Noah Isaacson <noah@nisaacson.com> (https://github.com/nisaacson)"
+    "Noah Isaacson <noah@nisaacson.com> (https://github.com/nisaacson)",
+    "Isabella Skořepová <> (https://github.com/CodeWitchBella)"
   ],
   "repository": {
     "type": "url",
-    "url": "https://github.com/dcodeIO/bcrypt.js.git"
+    "url": "https://github.com/CodeWitchBella/bcrypt.js.git"
   },
   "bugs": {
-    "url": "https://github.com/dcodeIO/bcrypt.js/issues"
+    "url": "https://github.com/CodeWitchBella/bcrypt.js/issues"
   },
   "keywords": [
     "bcrypt",
@@ -26,17 +27,17 @@
     "crypt",
     "crypto"
   ],
-  "bin": {
-    "bcrypt": "bin/bcrypt"
+  "type": "module",
+  "exports": {
+    ".": {
+      "node": "./index-node.js",
+      "default": "./index.js"
+    }
   },
-  "main": "index.js",
-  "browser": "dist/bcrypt.js",
   "dependencies": {},
   "devDependencies": {
-    "bcrypt": "latest",
-    "closurecompiler": "~1",
-    "metascript": "~1.0.0",
-    "testjs": "~1"
+    "bcrypt": "^5.0.1",
+    "bcryptjs": "^2.4.3"
   },
   "license": "MIT",
   "scripts": {

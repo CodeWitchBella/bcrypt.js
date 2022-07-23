@@ -1,15 +1,10 @@
-var path = require("path"),
-    fs = require("fs"),
-    binding = require("bcrypt"),
-    bcrypt = require(path.join(__dirname, '..', 'index.js'))/*,
-    isaac = eval(
-        fs.readFileSync(path.join(__dirname, "..", "src", "bcrypt", "prng", "accum.js"))+
-        fs.readFileSync(path.join(__dirname, "..", "src", "bcrypt", "prng", "isaac.js"))+
-        " accum.start();"+
-        " isaac"
-    )*/;
+import * as assert from 'node:assert/strict'
+import * as path from "path"
+import * as fs from "fs"
+import * as binding from "bcrypt"
+import * as bcrypt from '../index-node.js'
     
-module.exports = {
+const suite = {
 
     "encodeBase64": function(test) {
         var str = bcrypt.encodeBase64([0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10], 16);
@@ -31,13 +26,12 @@ module.exports = {
         test.done();
     },
     
-    "genSalt": function(test) {
-        bcrypt.genSalt(10, function(err, salt) {
-            test.ok(salt);
-            test.ok(typeof salt == 'string');
-            test.ok(salt.length > 0);
-            test.done();
-        });
+    "genSalt": async function(test) {
+        const salt = await bcrypt.genSalt(10)
+        test.ok(salt);
+        test.ok(typeof salt == 'string');
+        test.ok(salt.length > 0);
+        test.done();
     },
     
     "hashSync": function(test) {
@@ -165,33 +159,56 @@ module.exports = {
         });
     },
 
-    "compat": {
-        "quickbrown": function(test) {
-            var pass = fs.readFileSync(path.join(__dirname, "quickbrown.txt"))+"",
-                salt = bcrypt.genSaltSync(),
-                hash1 = binding.hashSync(pass, salt),
-                hash2 = bcrypt.hashSync(pass, salt);
-            test.equal(hash1, hash2);
-            test.done();
-        },
+    "compat:quickbrown": function(test) {
+        var pass = fs.readFileSync(new URL("quickbrown.txt", import.meta.url), 'utf-8');
+        var salt = bcrypt.genSaltSync();
+        var expected = binding.hashSync(pass, salt);
+        var actual = bcrypt.hashSync(pass, salt);
+        assert.equal(actual, expected);
+        test.done();
+    },
 
-        "roundsOOB": function(test) {
-            var salt1 = bcrypt.genSaltSync(0), // $10$ like not set
-                salt2 = binding.genSaltSync(0);
-            test.strictEqual(salt1.substring(0, 7), "$2a$10$");
-            test.strictEqual(salt2.substring(0, 7), "$2a$10$");
+    "compat:roundsOOB": function(test) {
+        var salt1 = bcrypt.genSaltSync(0), // $10$ like not set
+            salt2 = bindingConvert(binding.genSaltSync(0));
+        test.strictEqual(salt1.substring(0, 7), "$2a$10$");
+        test.strictEqual(salt2.substring(0, 7), "$2a$10$");
 
-            salt1 = bcrypt.genSaltSync(3); // $04$ is lower cap
-            salt2 = bcrypt.genSaltSync(3);
-            test.strictEqual(salt1.substring(0, 7), "$2a$04$");
-            test.strictEqual(salt2.substring(0, 7), "$2a$04$");
+        salt1 = bcrypt.genSaltSync(3); // $04$ is lower cap
+        salt2 = bcrypt.genSaltSync(3);
+        test.strictEqual(salt1.substring(0, 7), "$2a$04$");
+        test.strictEqual(salt2.substring(0, 7), "$2a$04$");
 
-            salt1 = bcrypt.genSaltSync(32); // $31$ is upper cap
-            salt2 = bcrypt.genSaltSync(32);
-            test.strictEqual(salt1.substring(0, 7), "$2a$31$");
-            test.strictEqual(salt2.substring(0, 7), "$2a$31$");
+        salt1 = bcrypt.genSaltSync(32); // $31$ is upper cap
+        salt2 = bcrypt.genSaltSync(32);
+        test.strictEqual(salt1.substring(0, 7), "$2a$31$");
+        test.strictEqual(salt2.substring(0, 7), "$2a$31$");
 
-            test.done();
-        }
-    }
+        test.done();
+    },
 };
+
+// TODO: implement the $2b$ hash version
+function bindingConvert(v) {
+    if (v.startsWith("$2b$")) return v.replace("$2b", "$2a")
+    throw new Error('Expected $2b$ hash')
+}
+
+for (const [testName, testCase] of Object.entries(suite)) {
+    console.log('Running '+ testName+'...')
+    try {
+        await new Promise((resolve, reject) => {
+            const test = {
+                ...assert,
+                done() { resolve() },
+                fail(err) { reject(err) },
+                notOk(v) { assert.ok(!v) },
+            }
+            Promise.resolve().then(() => testCase(test)).then(resolve, reject)
+        })
+        console.log('    ok')
+    } catch(e) {
+        console.error(e)
+        process.exit(1)
+    }
+}

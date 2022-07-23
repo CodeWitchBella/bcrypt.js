@@ -2,6 +2,7 @@
  Copyright (c) 2012 Nevins Bartolomeo <nevins.bartolomeo@gmail.com>
  Copyright (c) 2012 Shane Girish <shaneGirish@gmail.com>
  Copyright (c) 2013 Daniel Wirtz <dcode@dcode.io>
+ Copyright (c) 2022 Isabella Skořepová <isabella@skorepova.info>
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions
@@ -26,4 +27,4 @@
  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-module.exports = require("./dist/bcrypt.js");
+export * from './src/bcrypt.js'

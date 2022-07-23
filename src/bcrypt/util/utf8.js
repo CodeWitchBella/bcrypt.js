@@ -1,5 +1,5 @@
 /** Calculates the byte length of a string encoded as UTF8. */
-function utf8Length(string) {
+export function utf8Length(string) {
   var len = 0,
       c = 0;
   for (var i = 0; i < string.length; ++i) {
@@ -20,8 +20,14 @@ function utf8Length(string) {
   return len;
 }
 
-/** Converts a string to an array of UTF8 bytes. */
-function utf8Array(string) {
+/**
+ * Converts a JavaScript string to UTF8 bytes.
+ * @function
+ * @param {string} str String
+ * @returns {!Array.<number>} UTF8 bytes
+ * @inner
+ */
+export function stringToBytes(string) {
   var offset = 0,
       c1, c2;
   var buffer = new Array(utf8Length(string));
