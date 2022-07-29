@@ -1,7 +1,7 @@
 {
   "name": "@isbl/bcryptjs",
   "description": "Optimized bcrypt in plain JavaScript with zero dependencies modified to run in modern browser-compatible js runtimes.",
-  "version": "3.0.0-beta.1",
+  "version": "3.0.0-beta.2",
   "publishConfig": {
     "access": "public"
   },
@@ -33,6 +33,7 @@
   "type": "module",
   "exports": {
     ".": {
+      "types": "./types/index.d.ts",
       "node": "./index-node.js",
       "default": "./index.js"
     }
@@ -41,11 +42,13 @@
   "devDependencies": {
     "@isbl/publisher": "^0.8.2",
     "bcrypt": "^5.0.1",
-    "bcryptjs": "^2.4.3"
+    "bcryptjs": "^2.4.3",
+    "typescript": "^4.7.4"
   },
   "license": "MIT",
   "scripts": {
     "test": "node tests/suite.js",
+    "prepare": "tsc",
     "prepublishOnly": "isbl-publisher prepublishOnly"
   }
 }

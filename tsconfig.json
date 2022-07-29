@@ -1,0 +1,12 @@
+{
+    "exclude": [
+        "**/*.d.ts"
+    ],
+    "compilerOptions": {
+        "allowJs": true,
+        "strict": true,
+        "declaration": true,
+        "emitDeclarationOnly": true,
+        "declarationDir": "types"
+    }
+}
